@@ -34,7 +34,6 @@ public class home extends javax.swing.JFrame {
         setTitle("Painel de Controle Estoque");
         setMaximizedBounds(new java.awt.Rectangle(0, 0, 0, 0));
         setMaximumSize(new java.awt.Dimension(1200, 720));
-        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);

@@ -236,6 +236,11 @@ public class home extends javax.swing.JFrame {
         jMenu3.setText("Estoque de peças");
 
         jMenu12.setText("Cadastrar");
+        jMenu12.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu12MouseClicked(evt);
+            }
+        });
         jMenu3.add(jMenu12);
 
         jMenu10.setText("Consultar");
@@ -340,6 +345,10 @@ public class home extends javax.swing.JFrame {
     private void jMenu14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu14MouseClicked
         new consulta_cliente().setVisible(true);
     }//GEN-LAST:event_jMenu14MouseClicked
+
+    private void jMenu12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu12MouseClicked
+        new cadastro_peca().setVisible(true);
+    }//GEN-LAST:event_jMenu12MouseClicked
 
     /**
      * @param args the command line arguments

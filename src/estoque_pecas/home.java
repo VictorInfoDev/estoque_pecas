@@ -69,7 +69,7 @@ public class home extends javax.swing.JFrame {
 
         jLabel10.setText("jLabel10");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Painel de Controle Estoque");
         setLocationByPlatform(true);
         setSize(new java.awt.Dimension(0, 0));
@@ -249,6 +249,11 @@ public class home extends javax.swing.JFrame {
         jMenu11.setText("Baixas");
 
         jMenu20.setText("Nova");
+        jMenu20.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu20MouseClicked(evt);
+            }
+        });
         jMenu11.add(jMenu20);
 
         jMenu21.setText("Consultar");
@@ -281,6 +286,11 @@ public class home extends javax.swing.JFrame {
         jMenu5.setText("Pedidos");
 
         jMenu15.setText("Novo");
+        jMenu15.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu15MouseClicked(evt);
+            }
+        });
         jMenu5.add(jMenu15);
 
         jMenu16.setText("Abertos");
@@ -294,9 +304,19 @@ public class home extends javax.swing.JFrame {
         jMenu6.setText("Configurações Administrador");
 
         jMenu18.setText("Cadastrar Usuário");
+        jMenu18.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu18MouseClicked(evt);
+            }
+        });
         jMenu6.add(jMenu18);
 
         jMenu19.setText("Consultar Usuários");
+        jMenu19.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu19MouseClicked(evt);
+            }
+        });
         jMenu6.add(jMenu19);
 
         jMenuBar1.add(jMenu6);
@@ -349,6 +369,22 @@ public class home extends javax.swing.JFrame {
     private void jMenu12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu12MouseClicked
         new cadastro_peca().setVisible(true);
     }//GEN-LAST:event_jMenu12MouseClicked
+
+    private void jMenu15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu15MouseClicked
+        new pedidoPeca().setVisible(true);        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenu15MouseClicked
+
+    private void jMenu18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu18MouseClicked
+        new cadastroUsuario().setVisible(true);       // TODO add your handling code here:
+    }//GEN-LAST:event_jMenu18MouseClicked
+
+    private void jMenu19MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu19MouseClicked
+        new consultaUsuario().setVisible(true);        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenu19MouseClicked
+
+    private void jMenu20MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu20MouseClicked
+        new baixaPeca().setVisible(true);        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenu20MouseClicked
 
     /**
      * @param args the command line arguments

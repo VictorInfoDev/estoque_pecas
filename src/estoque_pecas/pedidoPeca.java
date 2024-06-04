@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package estoque_pecas;
+import estoque_pecas.filtros.caixaAlta;
+import estoque_pecas.filtros.soNumeros;
 
 /**
  *
@@ -16,6 +18,8 @@ public class pedidoPeca extends javax.swing.JFrame {
     public pedidoPeca() {
         initComponents();
         quantidadePecaPedido.setEditable(false);
+        codPecaPedido.setDocument(new caixaAlta());
+        quantidadePecaPedido.setDocument(new soNumeros());
     }
 
     /**
@@ -56,7 +60,8 @@ public class pedidoPeca extends javax.swing.JFrame {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Pedido de Peça");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -97,12 +102,12 @@ public class pedidoPeca extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel9.setText("Quantidade disponível:");
 
-        jLabel10.setText("99");
+        jLabel10.setText("0");
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel11.setText("Valor por unidade:");
+        jLabel11.setText("Valor Unitário:");
 
-        jLabel12.setText("123,12");
+        jLabel12.setText("0");
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel13.setText("Quantidade:");

@@ -170,6 +170,9 @@ public class cadastroUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_nomeUsuarioActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        nomeUsuario.setText("");
+        senhaUsuario.setText("");
+        confirmarSenhaUsuario.setText("");        
         this.dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -180,11 +183,25 @@ public class cadastroUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        String nome = nomeUsuario.getText();
         String senha = new String(senhaUsuario.getPassword());
-        insertUsuario novo = new insertUsuario(nome, senha);
-        novo.insertDados();
-        this.dispose();
+        String senha2 = new String(confirmarSenhaUsuario.getPassword());
+        int tamanhoNome = nomeUsuario.getText().length();
+        int tamanhoSenha = senha.length();
+        if(tamanhoNome < 4 || tamanhoSenha < 3 || tamanhoNome > 50 || tamanhoSenha > 50){
+            JOptionPane.showMessageDialog(null, "Nome de 4 a 50 caracteres\nSenha de 3 a 50 caracteres");
+            nomeUsuario.setText("");
+            senhaUsuario.setText("");
+            confirmarSenhaUsuario.setText("");
+        }else{
+            if(senha.equals(senha2)){
+                String nome = nomeUsuario.getText();
+                insertUsuario novo = new insertUsuario(nome, senha);
+                novo.insertDados();
+                this.dispose();
+            }else{
+                JOptionPane.showMessageDialog(null, "Senha de confirmação incorreta!");
+            }            
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

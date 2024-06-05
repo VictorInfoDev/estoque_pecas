@@ -70,7 +70,7 @@ public class home extends javax.swing.JFrame {
 
         jLabel10.setText("jLabel10");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Painel de Controle Estoque");
         setLocationByPlatform(true);
         setSize(new java.awt.Dimension(0, 0));

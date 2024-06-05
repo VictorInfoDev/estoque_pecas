@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
  * @author victo
  */
 public class home extends javax.swing.JFrame {
-
+    
     /**
      * Creates new form janela1
      */
@@ -346,6 +346,7 @@ public class home extends javax.swing.JFrame {
         Connection conn = ClasseConexao.Conectar();
         jLabel1.setText("Database Connect");
         ClasseConexao.FecharConexao(conn);
+
     }//GEN-LAST:event_formWindowOpened
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated

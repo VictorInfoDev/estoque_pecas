@@ -3,9 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package estoque_pecas;
-import estoque_pecas.comandos.insertUsuario;
 import javax.swing.JOptionPane;
-import javax.swing.JFrame;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import estoque_pecas.comandos.ClasseConexao;
 
 /**
  *
@@ -187,22 +192,74 @@ public class cadastroUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        //pegando dados de validaçao 
         String senha = new String(senhaUsuario.getPassword());
         String senha2 = new String(confirmarSenhaUsuario.getPassword());
+        int quantUser = 0;
         int tamanhoNome = nomeUsuario.getText().length();
         int tamanhoSenha = senha.length();
+        //validação tamanho campos
         if(tamanhoNome < 4 || tamanhoSenha < 3 || tamanhoNome > 50 || tamanhoSenha > 50){
             JOptionPane.showMessageDialog(null, "Nome de 4 a 50 caracteres\nSenha de 3 a 50 caracteres");
             nomeUsuario.setText("");
             senhaUsuario.setText("");
             confirmarSenhaUsuario.setText("");
         }else{
+            //validação senha de confirmação 
             if(senha.equals(senha2)){
-                String nome = nomeUsuario.getText();
-                insertUsuario novo = new insertUsuario(nome, senha);
-                novo.insertDados();
+                Connection conexao = null;
+                Statement comando = null;
+                ResultSet resultado = null;
+                //validação com select de um usuário já existente 
+                try {
+                    conexao = ClasseConexao.Conectar();
+                    comando = conexao.createStatement();
+
+                    String sql = "SELECT count(nome_user) FROM usuario WHERE nome_user = '" + nomeUsuario.getText() + "'";
+                    resultado = comando.executeQuery(sql);
+                    while(resultado.next())
+                    {
+                        quantUser = Integer.parseInt(resultado.getString("count(nome_user)"));
+                    }
+                }catch(SQLException erro)
+                {erro.printStackTrace();
+                }finally{ClasseConexao.FecharConexao(conexao);
+                    try{comando.close();
+                    }catch(SQLException erro){
+                        erro.printStackTrace();}
+                }
+                PreparedStatement comandoIn = null;
+                conexao = null;
+                if(quantUser == 0){
+                    //insert dos dados do usuário caso todos estejam validados
+                    try {
+                        conexao = ClasseConexao.Conectar();
+                        String sql = "INSERT into usuario(nome_user,senha_user,tipo_user) VALUES(?,?,?)";
+                        comandoIn = conexao.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+
+                        comandoIn.setString(1, nomeUsuario.getText());
+                        comandoIn.setString(2, senha);
+                        comandoIn.setInt(3, 0);
+
+                        if(comandoIn.executeUpdate()>0){
+                            this.dispose();
+                            JOptionPane.showMessageDialog(null, "Usuário Criado!");
+                        }
+                    } catch(SQLException erro) {
+                        erro.printStackTrace();
+                    } finally {
+                        ClasseConexao.FecharConexao(conexao);
+
+                        try{
+                            comando.close();
+                        } catch(SQLException erro) {
+                            erro.printStackTrace();
+                        }
+                    }
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Este usuário já existe!");
+                    }
             }else{
-                
                 JOptionPane.showMessageDialog(null, "Senha de confirmação incorreta!");
             }            
         }

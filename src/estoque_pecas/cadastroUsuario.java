@@ -5,6 +5,8 @@
 package estoque_pecas;
 import estoque_pecas.comandos.insertUsuario;
 import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+
 /**
  *
  * @author 122412454
@@ -17,7 +19,9 @@ public class cadastroUsuario extends javax.swing.JFrame {
     public cadastroUsuario() {
         initComponents();
     }
-
+    public void fecharFrame(){
+        this.dispose();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -173,7 +177,7 @@ public class cadastroUsuario extends javax.swing.JFrame {
         nomeUsuario.setText("");
         senhaUsuario.setText("");
         confirmarSenhaUsuario.setText("");        
-        this.dispose();        // TODO add your handling code here:
+        this.dispose();    // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -197,8 +201,8 @@ public class cadastroUsuario extends javax.swing.JFrame {
                 String nome = nomeUsuario.getText();
                 insertUsuario novo = new insertUsuario(nome, senha);
                 novo.insertDados();
-                this.dispose();
             }else{
+                
                 JOptionPane.showMessageDialog(null, "Senha de confirmação incorreta!");
             }            
         }
@@ -230,13 +234,13 @@ public class cadastroUsuario extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(cadastroUsuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new cadastroUsuario().setVisible(true);
             }
         });
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -1,4 +1,4 @@
-package estoque_pecas;
+package estoque_pecas.usuario;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;

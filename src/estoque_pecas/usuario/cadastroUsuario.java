@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package estoque_pecas;
+package estoque_pecas.usuario;
 import javax.swing.JOptionPane;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,9 +23,6 @@ public class cadastroUsuario extends javax.swing.JFrame {
      */
     public cadastroUsuario() {
         initComponents();
-    }
-    public void fecharFrame(){
-        this.dispose();
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -228,10 +225,10 @@ public class cadastroUsuario extends javax.swing.JFrame {
                     }catch(SQLException erro){
                         erro.printStackTrace();}
                 }
+                //insert dos dados do usuário caso todos estejam validados
                 PreparedStatement comandoIn = null;
                 conexao = null;
                 if(quantUser == 0){
-                    //insert dos dados do usuário caso todos estejam validados
                     try {
                         conexao = ClasseConexao.Conectar();
                         String sql = "INSERT into usuario(nome_user,senha_user,tipo_user) VALUES(?,?,?)";

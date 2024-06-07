@@ -9,14 +9,10 @@ import javax.swing.text.PlainDocument;
 
 public class caixaAlta extends PlainDocument {
 
-	public void insertString(int offset, String str, AttributeSet attr)
+	public void insertString(int offs, String str, AttributeSet a)
 		throws BadLocationException {
-		if (str == null)
-			return;
-		super.insertString(offset, str.toUpperCase(), attr); // Detalhe no str
-		return;
+		super.insertString(offs,str.replaceAll("[^0-9 ^A-Z]", ""), a);
 	}
-
 }
 /**
  *

@@ -185,6 +185,9 @@ public class cadastroPeca extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if(valorPeca.getText().equals("") || valorPeca.getText() == null){
+            valorPeca.setText("0");
+        }
         double valorPecaFormat = Double.parseDouble(valorPeca.getText().replaceAll(",", "."));
         valorPeca.setText(String.valueOf(valorPecaFormat).format("%.2f", valorPecaFormat));
         int select = unidadePeca.getSelectedIndex();
@@ -197,10 +200,17 @@ public class cadastroPeca extends javax.swing.JFrame {
         String codPecaN = codPeca.getText();
         String nomePecaN = nomePeca.getText();
         String descPecaN = descPeca.getText();
-        if(valorPecaFormat == 0 || codPecaN.length() < 3 || codPecaN.length() > 50){}
-        if(codPeca.getText().equals("") || nomePeca.getText().equals("") || descPeca.getText().equals("") || valorPeca.getText().equals("") || valorPecaFormat == 0 || select == 0){
-            JOptionPane.showMessageDialog(null, "Todos os campos são obrigatórios!");
-        }else{
+        //validação de tamanho do textfield
+        if(
+            valorPecaFormat == 0 || 
+            codPecaN.length() < 3 || codPecaN.length() > 50 ||
+            nomePecaN.length() < 3 || nomePecaN.length() > 50 ||
+            descPecaN.length() < 3 || descPecaN.length() > 50 ||
+            select == 4 
+           ){
+            JOptionPane.showMessageDialog(null, "Informações de peça incompleta!\nCódigo: 3 a 50 caracteres\nNome: 3 a 50 caracteres\nDescrição: 3 a 50 caracteres\nValor: maior que zero\nUnidade: obrigatório");
+        }
+        else{
             Connection conexao = null;
             PreparedStatement comando = null;
             try {
@@ -229,8 +239,7 @@ public class cadastroPeca extends javax.swing.JFrame {
                 } catch(SQLException erro) {
                     erro.printStackTrace();
                 }
-            }
-            
+            }  
         }
         
         

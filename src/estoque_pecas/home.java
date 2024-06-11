@@ -2,6 +2,7 @@ package estoque_pecas;
 import estoque_pecas.pedido.pedidoPeca;
 import estoque_pecas.peca.cadastroPeca;
 import estoque_pecas.peca.baixaPeca;
+import estoque_pecas.peca.consultaBaixa;
 import estoque_pecas.cliente.consultaCliente;
 import estoque_pecas.cliente.cadastroCliente;
 import estoque_pecas.usuario.consultaUsuario;
@@ -275,6 +276,11 @@ public class home extends javax.swing.JFrame {
         jMenu11.add(jMenu20);
 
         jMenu21.setText("Consultar");
+        jMenu21.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu21MouseClicked(evt);
+            }
+        });
         jMenu11.add(jMenu21);
 
         jMenu3.add(jMenu11);
@@ -398,6 +404,10 @@ public class home extends javax.swing.JFrame {
     private void jMenu20MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu20MouseClicked
         new baixaPeca().setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_jMenu20MouseClicked
+
+    private void jMenu21MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu21MouseClicked
+        new consultaBaixa().setVisible(true);        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenu21MouseClicked
 
     /**
      * @param args the command line arguments

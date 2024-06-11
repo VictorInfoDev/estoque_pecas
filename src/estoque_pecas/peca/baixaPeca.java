@@ -1,9 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package estoque_pecas.peca;
 import estoque_pecas.filtros.caixaAlta;
+import estoque_pecas.filtros.soNumerosQtd;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import java.sql.ResultSet;
+import estoque_pecas.comandos.ClasseConexao;
 
 /**
  *
@@ -17,6 +21,7 @@ public class baixaPeca extends javax.swing.JFrame {
     public baixaPeca() {
         initComponents();
         codBaixa.setDocument(new caixaAlta());
+        qtdBaixaField.setDocument(new soNumerosQtd());
     }
 
     /**
@@ -30,14 +35,14 @@ public class baixaPeca extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         codBaixa = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        motivoBaixa = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        qtdBaixaField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Solicitar Baixa de Peça");
@@ -50,9 +55,9 @@ public class baixaPeca extends javax.swing.JFrame {
             }
         });
 
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        motivoBaixa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                motivoBaixaActionPerformed(evt);
             }
         });
 
@@ -64,18 +69,28 @@ public class baixaPeca extends javax.swing.JFrame {
         });
 
         jButton2.setText("Limpar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Enviar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Quantidade");
 
         jLabel2.setText("Motivo");
 
-        jLabel3.setText("Código");
+        jLabel3.setText("Código da Peça");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        qtdBaixaField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                qtdBaixaFieldActionPerformed(evt);
             }
         });
 
@@ -86,7 +101,7 @@ public class baixaPeca extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField3)
+                    .addComponent(motivoBaixa)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -103,7 +118,7 @@ public class baixaPeca extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))))
+                                    .addComponent(qtdBaixaField, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -117,11 +132,11 @@ public class baixaPeca extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(codBaixa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(qtdBaixaField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addGap(6, 6, 6)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(motivoBaixa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton3)
@@ -145,21 +160,120 @@ public class baixaPeca extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+    private void motivoBaixaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_motivoBaixaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+    }//GEN-LAST:event_motivoBaixaActionPerformed
 
     private void codBaixaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codBaixaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_codBaixaActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void qtdBaixaFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qtdBaixaFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_qtdBaixaFieldActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        Connection conexao = null;
+        Statement comandoSelect = null;
+        ResultSet resultado = null;
+        ResultSet resultado2 = null;
+        int qtdCod = 0;
+        int qtdCodEstoque = 0;
+        int qtdPecaEstoque = 0;
+        if(qtdBaixaField.getText().equals("") || qtdBaixaField.getText() == null){qtdBaixaField.setText("0");}
+        int qtdBaixa = Integer.parseInt(qtdBaixaField.getText());
+        try
+        {
+            conexao = ClasseConexao.Conectar();
+            comandoSelect = conexao.createStatement();
+            //LINHA DE BUSCA SQL
+            String sqlSelect = "SELECT count(cod_peca_baixa) FROM baixa WHERE cod_peca_baixa = '" + codBaixa.getText() + "'";
+            resultado = comandoSelect.executeQuery(sqlSelect);
+            //RESULTADO DA BUSCA
+            while(resultado.next())
+            {
+                qtdCod = Integer.parseInt(resultado.getString("count(cod_peca_baixa)"));
+            }
+
+        }catch(SQLException erro){erro.printStackTrace();}
+        finally{ClasseConexao.FecharConexao(conexao);
+            try{comandoSelect.close();}
+            catch(SQLException erro){erro.printStackTrace();}}
+        try
+        {
+            conexao = ClasseConexao.Conectar();
+            comandoSelect = conexao.createStatement();
+            //LINHA DE BUSCA SQL
+            String sqlSelect2 = "SELECT count(cod_peca), quant_peca FROM pecas WHERE cod_peca = '" + codBaixa.getText() + "'";
+            resultado2 = comandoSelect.executeQuery(sqlSelect2);
+            //RESULTADO DA BUSCA
+            while(resultado2.next())
+            {
+                qtdCodEstoque = Integer.parseInt(resultado2.getString("count(cod_peca)"));
+                qtdPecaEstoque = resultado2.getInt("quant_peca");
+            }
+
+        }catch(SQLException erro){erro.printStackTrace();}
+        finally{ClasseConexao.FecharConexao(conexao);
+            try{comandoSelect.close();}
+            catch(SQLException erro){erro.printStackTrace();}}
+        if(qtdCodEstoque == 0){
+            JOptionPane.showMessageDialog(null, "Está peça não está cadastrada!");
+        }
+        else{
+            if(qtdCod == 0){
+                if(qtdPecaEstoque >= qtdBaixa){
+                    if(motivoBaixa.getText().equals("") || motivoBaixa.getText() == null){
+                        JOptionPane.showMessageDialog(null, "Motivo obrigatório irmão!");
+                    }else{
+                        conexao = null;
+                        PreparedStatement comandoIn = null;
+                        try{conexao = ClasseConexao.Conectar();
+                            //LINHA DE INSERT, DELETE E UPDATE SQL
+                            String sqlIn = "INSERT into baixa(nome_user_baixa, motivo_baixa, cod_peca_baixa, quant_peca_baixa) VALUES(?,?,?,?)";
+                            comandoIn = conexao.prepareStatement(sqlIn,Statement.RETURN_GENERATED_KEYS);
+
+                            //VALORES PARA OS CAMPOS DA LINHA SQL  
+                            comandoIn.setString(1, "test");
+                            comandoIn.setString(2, motivoBaixa.getText());
+                            comandoIn.setString(3, codBaixa.getText());
+                            comandoIn.setInt(4, qtdBaixa);
+
+                            if(comandoIn.executeUpdate()>0)
+                            {
+                                //EXECUTA CASO A OPERACAO SEJA REALIZADA COM SUCESSO 
+                                JOptionPane.showMessageDialog(null, "Baixa enviada para análise!");
+                                this.dispose();
+
+                            }}catch(SQLException erro)
+                        {erro.printStackTrace();}
+                        finally{ClasseConexao.FecharConexao(conexao);
+                            try{comandoIn.close();}
+                            catch(SQLException erro){erro.printStackTrace();}} 
+                    }
+
+                }else{
+                    JOptionPane.showMessageDialog(null, "Quantidade inválida!");
+                }
+
+            }else{
+                JOptionPane.showMessageDialog(null, "Já existe uma baixa para esta peça!");
+                codBaixa.setText("");
+                qtdBaixaField.setText("");
+                motivoBaixa.setText("");
+            }
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        codBaixa.setText("");
+        qtdBaixaField.setText("");
+        motivoBaixa.setText("");
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -205,7 +319,7 @@ public class baixaPeca extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField motivoBaixa;
+    private javax.swing.JTextField qtdBaixaField;
     // End of variables declaration//GEN-END:variables
 }

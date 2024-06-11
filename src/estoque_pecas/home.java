@@ -8,6 +8,7 @@ import estoque_pecas.cliente.cadastroCliente;
 import estoque_pecas.usuario.consultaUsuario;
 import estoque_pecas.usuario.cadastroUsuario;
 import estoque_pecas.comandos.ClasseConexao;
+import estoque_pecas.os.criarOS;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -85,6 +86,7 @@ public class home extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Painel de Controle Estoque");
         setLocationByPlatform(true);
+        setResizable(false);
         setSize(new java.awt.Dimension(0, 0));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
@@ -242,6 +244,11 @@ public class home extends javax.swing.JFrame {
         jMenu1.add(jSeparator1);
 
         jMenu2.setText("Nova");
+        jMenu2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu2MouseClicked(evt);
+            }
+        });
         jMenu1.add(jMenu2);
 
         jMenu8.setText("Abertas");
@@ -408,6 +415,10 @@ public class home extends javax.swing.JFrame {
     private void jMenu21MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu21MouseClicked
         new consultaBaixa().setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_jMenu21MouseClicked
+
+    private void jMenu2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu2MouseClicked
+        new criarOS().setVisible(true);        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenu2MouseClicked
 
     /**
      * @param args the command line arguments

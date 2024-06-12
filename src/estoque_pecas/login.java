@@ -158,11 +158,9 @@ public class login extends javax.swing.JFrame {
             
         }else{
             if(senhaUsuario.equals(senhaValida)){
-                new home().setVisible(true);
                 String texto = getTextNome();
-                home Home = new home();
+                new home(texto).setVisible(true);
                 this.dispose();
-                Home.setDados(texto);
             }else{
                 JOptionPane.showMessageDialog(null, "Senha incorreta!");
                 senhaPassword.setText("");

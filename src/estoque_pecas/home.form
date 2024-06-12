@@ -38,6 +38,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Abertas"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jMenu8MouseClicked"/>
+              </Events>
             </Menu>
             <Menu class="javax.swing.JMenu" name="jMenu9">
               <Properties>
@@ -77,12 +80,12 @@
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jMenu20MouseClicked"/>
                   </Events>
                 </Menu>
-                <Menu class="javax.swing.JMenu" name="jMenu21">
+                <Menu class="javax.swing.JMenu" name="menu2Admin">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Consultar"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jMenu21MouseClicked"/>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="menu2AdminMouseClicked"/>
                   </Events>
                 </Menu>
               </SubComponents>
@@ -137,7 +140,7 @@
             </Menu>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu6">
+        <Menu class="javax.swing.JMenu" name="menuAdmin">
           <Properties>
             <Property name="text" type="java.lang.String" value="Configura&#xe7;&#xf5;es Administrador"/>
           </Properties>

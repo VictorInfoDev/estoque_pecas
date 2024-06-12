@@ -9,6 +9,7 @@ import estoque_pecas.usuario.consultaUsuario;
 import estoque_pecas.usuario.cadastroUsuario;
 import estoque_pecas.comandos.ClasseConexao;
 import estoque_pecas.os.criarOS;
+import estoque_pecas.os.abertasOS;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -18,15 +19,21 @@ import javax.swing.JOptionPane;
  */
 public class home extends javax.swing.JFrame {
     
-    /**
-     * Creates new form janela1
-     */
-    public home() {
+    private String tipo_user;
+    
+    
+    
+    public home(String tipoUs) {
         initComponents();
-    }
-
-    public void setDados(String texto) {
-        JOptionPane.showMessageDialog(null, "Usuário "+texto+" está conectado!");
+        this.tipo_user = tipoUs;
+        
+        if(tipo_user.equals("admin")){
+            menuAdmin.setVisible(true);
+            menu2Admin.setVisible(true); 
+        }else{
+            menuAdmin.setVisible(false);
+            menu2Admin.setVisible(false);
+        }
     }
 
     /**
@@ -69,7 +76,7 @@ public class home extends javax.swing.JFrame {
         jMenu10 = new javax.swing.JMenu();
         jMenu11 = new javax.swing.JMenu();
         jMenu20 = new javax.swing.JMenu();
-        jMenu21 = new javax.swing.JMenu();
+        menu2Admin = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         jMenu13 = new javax.swing.JMenu();
         jMenu14 = new javax.swing.JMenu();
@@ -77,7 +84,7 @@ public class home extends javax.swing.JFrame {
         jMenu15 = new javax.swing.JMenu();
         jMenu16 = new javax.swing.JMenu();
         jMenu17 = new javax.swing.JMenu();
-        jMenu6 = new javax.swing.JMenu();
+        menuAdmin = new javax.swing.JMenu();
         jMenu18 = new javax.swing.JMenu();
         jMenu19 = new javax.swing.JMenu();
 
@@ -252,6 +259,11 @@ public class home extends javax.swing.JFrame {
         jMenu1.add(jMenu2);
 
         jMenu8.setText("Abertas");
+        jMenu8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu8MouseClicked(evt);
+            }
+        });
         jMenu1.add(jMenu8);
 
         jMenu9.setText("Encerradas");
@@ -282,13 +294,13 @@ public class home extends javax.swing.JFrame {
         });
         jMenu11.add(jMenu20);
 
-        jMenu21.setText("Consultar");
-        jMenu21.addMouseListener(new java.awt.event.MouseAdapter() {
+        menu2Admin.setText("Consultar");
+        menu2Admin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenu21MouseClicked(evt);
+                menu2AdminMouseClicked(evt);
             }
         });
-        jMenu11.add(jMenu21);
+        jMenu11.add(menu2Admin);
 
         jMenu3.add(jMenu11);
 
@@ -332,7 +344,7 @@ public class home extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu5);
 
-        jMenu6.setText("Configurações Administrador");
+        menuAdmin.setText("Configurações Administrador");
 
         jMenu18.setText("Cadastrar Usuário");
         jMenu18.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -340,7 +352,7 @@ public class home extends javax.swing.JFrame {
                 jMenu18MouseClicked(evt);
             }
         });
-        jMenu6.add(jMenu18);
+        menuAdmin.add(jMenu18);
 
         jMenu19.setText("Consultar Usuários");
         jMenu19.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -348,9 +360,9 @@ public class home extends javax.swing.JFrame {
                 jMenu19MouseClicked(evt);
             }
         });
-        jMenu6.add(jMenu19);
+        menuAdmin.add(jMenu19);
 
-        jMenuBar1.add(jMenu6);
+        jMenuBar1.add(menuAdmin);
 
         setJMenuBar(jMenuBar1);
 
@@ -377,7 +389,7 @@ public class home extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        jMenu6.setVisible(true);        // TODO add your handling code here:
+        // TODO add your handling code here:
     }//GEN-LAST:event_formWindowActivated
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -412,13 +424,17 @@ public class home extends javax.swing.JFrame {
         new baixaPeca().setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_jMenu20MouseClicked
 
-    private void jMenu21MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu21MouseClicked
+    private void menu2AdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menu2AdminMouseClicked
         new consultaBaixa().setVisible(true);        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenu21MouseClicked
+    }//GEN-LAST:event_menu2AdminMouseClicked
 
     private void jMenu2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu2MouseClicked
         new criarOS().setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_jMenu2MouseClicked
+
+    private void jMenu8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu8MouseClicked
+        new abertasOS().setVisible(true);        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenu8MouseClicked
 
     /**
      * @param args the command line arguments
@@ -451,7 +467,7 @@ public class home extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new home().setVisible(true);
+                //new home().setVisible(true);
             }
         });
     }
@@ -483,11 +499,9 @@ public class home extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu19;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu20;
-    private javax.swing.JMenu jMenu21;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenu8;
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
@@ -498,6 +512,8 @@ public class home extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
+    private javax.swing.JMenu menu2Admin;
+    private javax.swing.JMenu menuAdmin;
     public javax.swing.JLabel nomeUserLogin;
     // End of variables declaration//GEN-END:variables
 }

@@ -130,6 +130,11 @@ public class pedidoPeca extends javax.swing.JFrame {
         });
 
         jButton2.setText("Adicionar peça");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Remover peça");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -381,6 +386,16 @@ public class pedidoPeca extends javax.swing.JFrame {
     private void codPecaPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codPecaPedidoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_codPecaPedidoActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        int qtdsol = Integer.parseInt(quantidadePecaPedido.getText());
+        int qtdisp = Integer.parseInt(qtdPecaBusca.getText());
+        if(qtdsol > qtdisp){
+            JOptionPane.showMessageDialog(null,"Quantidade indisponível!");
+        }else{
+            
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

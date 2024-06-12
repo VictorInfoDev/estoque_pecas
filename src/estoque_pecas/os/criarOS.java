@@ -291,25 +291,49 @@ public class criarOS extends javax.swing.JFrame {
         Connection conexao = null;
         Statement comandoSelect = null;
         ResultSet resultado = null;
+        int qtdCpf = 0;
         try
         {
             conexao = ClasseConexao.Conectar();
             comandoSelect = conexao.createStatement();
             //LINHA DE BUSCA SQL
-            String sqlSelect = "SELECT nome_cliente, endereco_cliente, telefone_cliente FROM clientes WHERE cpf = '" + cpfCliente.getText() + "'";
+            String sqlSelect = "SELECT count(id_os) FROM ordem_servico WHERE cpf_cliente_os = '" + cpfCliente.getText() + "' and estado_os = 0";
             resultado = comandoSelect.executeQuery(sqlSelect);
             //RESULTADO DA BUSCA
             while(resultado.next())
             {
-                nomeCliente.setText(resultado.getString("nome_cliente"));
-                enderecoCliente.setText(resultado.getString("endereco_cliente"));
-                telefoneCliente.setText(resultado.getString("telefone_cliente"));
+                qtdCpf = Integer.parseInt(resultado.getString("count(id_os)"));
             }
 
         }catch(SQLException erro){erro.printStackTrace();}
         finally{ClasseConexao.FecharConexao(conexao);
             try{comandoSelect.close();}
-            catch(SQLException erro){erro.printStackTrace();}}
+            catch(SQLException erro){erro.printStackTrace();}}   
+        
+        if(qtdCpf == 1){
+            JOptionPane.showMessageDialog(null, "Este CPF já possui uma OS aberta!");
+        }else{
+            try
+            {
+                conexao = ClasseConexao.Conectar();
+                comandoSelect = conexao.createStatement();
+                //LINHA DE BUSCA SQL
+                String sqlSelect = "SELECT nome_cliente, endereco_cliente, telefone_cliente FROM clientes WHERE cpf = '" + cpfCliente.getText() + "'";
+                resultado = comandoSelect.executeQuery(sqlSelect);
+                //RESULTADO DA BUSCA
+                while(resultado.next())
+                {
+                    nomeCliente.setText(resultado.getString("nome_cliente"));
+                    enderecoCliente.setText(resultado.getString("endereco_cliente"));
+                    telefoneCliente.setText(resultado.getString("telefone_cliente"));
+                }
+
+            }catch(SQLException erro){erro.printStackTrace();}
+            finally{ClasseConexao.FecharConexao(conexao);
+                try{comandoSelect.close();}
+                catch(SQLException erro){erro.printStackTrace();}}          
+        }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void placaCarroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placaCarroActionPerformed
@@ -327,13 +351,17 @@ public class criarOS extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
+        this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         Date dataAtual = new Date();
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-        String dataString = formato.format(dataAtual);
+        SimpleDateFormat formatoDia = new SimpleDateFormat("dd");
+        SimpleDateFormat formatoMes = new SimpleDateFormat("MM");
+        SimpleDateFormat formatoAno = new SimpleDateFormat("yyyy");
+        String dataStringDia = formatoDia.format(dataAtual);
+        String dataStringMes = formatoMes.format(dataAtual);
+        String dataStringAno = formatoAno.format(dataAtual);
         int placa = placaCarro.getText().length();
         int modelo = modeloCarro.getText().length();
         int ano = anoCarro.getText().length();
@@ -344,7 +372,7 @@ public class criarOS extends javax.swing.JFrame {
             PreparedStatement comandoIn = null;
             try{conexao = ClasseConexao.Conectar();
                 //LINHA DE INSERT, DELETE E UPDATE SQL
-                String sqlIn = "INSERT into ordem_servico(nome_cliente_os, cpf_cliente_os, placa_veiculo, modelo_veiculo, ano_veiculo, desc_servico, valor_os, estado_os, data) VALUES(?,?,?,?,?,?,?,?,?)";
+                String sqlIn = "INSERT into ordem_servico(nome_cliente_os, cpf_cliente_os, placa_veiculo, modelo_veiculo, ano_veiculo, desc_servico, valor_os, estado_os, dia, mes, ano) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
                 comandoIn = conexao.prepareStatement(sqlIn,Statement.RETURN_GENERATED_KEYS);
 
                 //VALORES PARA OS CAMPOS DA LINHA SQL  
@@ -356,7 +384,9 @@ public class criarOS extends javax.swing.JFrame {
                 comandoIn.setString(6, "Nenhuma");
                 comandoIn.setDouble(7, 0.0);
                 comandoIn.setInt(8, 0);
-                comandoIn.setString(9, dataString);
+                comandoIn.setString(9, dataStringDia);
+                comandoIn.setString(10, dataStringMes);
+                comandoIn.setString(11, dataStringAno);
 
                 if(comandoIn.executeUpdate()>0)
                 {

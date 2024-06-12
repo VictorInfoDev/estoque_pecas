@@ -193,54 +193,88 @@ public class cadastroPeca extends javax.swing.JFrame {
         valorPeca.setText(String.valueOf(valorPecaFormat).format("%.2f", valorPecaFormat));
         int select = unidadePeca.getSelectedIndex();
         String selectText = "";
-        if(select == 1){selectText = "UNIDADE";}
-        if(select == 2){selectText = "JOGO";}
-        if(select == 3){selectText = "KIT";}
-        if(select == 4){selectText = "CONJUNTO";}
-        //insert dados peças
-        String codPecaN = codPeca.getText();
-        String nomePecaN = nomePeca.getText();
-        String descPecaN = descPeca.getText();
-        //validação de tamanho do textfield
-        if(
-            valorPecaFormat == 0 || 
-            codPecaN.length() < 3 || codPecaN.length() > 50 ||
-            nomePecaN.length() < 3 || nomePecaN.length() > 50 ||
-            descPecaN.length() < 3 || descPecaN.length() > 50 ||
-            select == 4 
-           ){
-            JOptionPane.showMessageDialog(null, "Informações de peça incompleta!\nCódigo: 3 a 50 caracteres\nNome: 3 a 50 caracteres\nDescrição: 3 a 50 caracteres\nValor: maior que zero\nUnidade: obrigatório");
-        }
-        else{
-            Connection conexao = null;
-            PreparedStatement comando = null;
-            try {
-            conexao = ClasseConexao.Conectar();
-            String sql = "INSERT into pecas(cod_peca, nome_peca, desc_peca, valor_peca, uni_peca, quant_peca) VALUES(?,?,?,?,?,?)";
-            comando = conexao.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+        if(select == 0){selectText = "UNIDADE";}
+        if(select == 1){selectText = "JOGO";}
+        if(select == 2){selectText = "KIT";}
+        if(select == 3){selectText = "CONJUNTO";}
+        // verificando se já existe a peça
+        Connection conexao = null;
+        Statement comando = null;
+        ResultSet resultado = null;
+        int quantPeca = 0;
+        try
+        {
+                conexao = ClasseConexao.Conectar();
+                comando = conexao.createStatement();
 
-            comando.setString(1, codPeca.getText());
-            comando.setString(2, nomePeca.getText());
-            comando.setString(3, descPeca.getText());
-            comando.setDouble(4, valorPecaFormat);
-            comando.setString(5, selectText);
-            comando.setInt(6, 0);
-
-            if(comando.executeUpdate()>0){
-                this.dispose();
-                JOptionPane.showMessageDialog(null, "Peça cadastrada!");
-            }
-            } catch(SQLException erro) {
+                String sql = "SELECT count(cod_peca) FROM pecas WHERE cod_peca = '" + codPeca.getText() + "'";
+                resultado = comando.executeQuery(sql);
+                while(resultado.next())
+                {
+                        quantPeca = Integer.parseInt(resultado.getString("count(cod_peca)"));
+                }
+        }catch(SQLException erro)
+        {
                 erro.printStackTrace();
-            } finally {
+        }finally
+        {
                 ClasseConexao.FecharConexao(conexao);
+                try
+                {
+                        comando.close();
+                }catch(SQLException erro)
+                {
+                        erro.printStackTrace();
+                }
+        }
+        if(quantPeca == 1){
+            JOptionPane.showMessageDialog(null, "Este código já existe!");
+        }else{
+                    //insert dados peças
+            String codPecaN = codPeca.getText();
+            String nomePecaN = nomePeca.getText();
+            String descPecaN = descPeca.getText();
+            //validação de tamanho do textfield
+            if(
+                valorPecaFormat == 0 || 
+                codPecaN.length() < 3 || codPecaN.length() > 50 ||
+                nomePecaN.length() < 3 || nomePecaN.length() > 50 ||
+                descPecaN.length() < 3 || descPecaN.length() > 50 ||
+                select == 4 
+               ){
+                JOptionPane.showMessageDialog(null, "Informações de peça incompleta!\nCódigo: 3 a 50 caracteres\nNome: 3 a 50 caracteres\nDescrição: 3 a 50 caracteres\nValor: maior que zero\nUnidade: obrigatório");
+            }
+            else{
+                conexao = null;
+                PreparedStatement comandoIn = null;
+                try {
+                conexao = ClasseConexao.Conectar();
+                String sql = "INSERT into pecas(cod_peca, nome_peca, desc_peca, valor_peca, uni_peca, quant_peca) VALUES(?,?,?,?,?,?)";
+                comandoIn = conexao.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 
-                try{
-                    comando.close();
+                comandoIn.setString(1, codPeca.getText());
+                comandoIn.setString(2, nomePeca.getText());
+                comandoIn.setString(3, descPeca.getText());
+                comandoIn.setDouble(4, valorPecaFormat);
+                comandoIn.setString(5, selectText);
+                comandoIn.setInt(6, 0);
+
+                if(comandoIn.executeUpdate()>0){
+                    this.dispose();
+                    JOptionPane.showMessageDialog(null, "Peça cadastrada!");
+                }
                 } catch(SQLException erro) {
                     erro.printStackTrace();
-                }
-            }  
+                } finally {
+                    ClasseConexao.FecharConexao(conexao);
+
+                    try{
+                        comandoIn.close();
+                    } catch(SQLException erro) {
+                        erro.printStackTrace();
+                    }
+                }  
+            }
         }
         
         

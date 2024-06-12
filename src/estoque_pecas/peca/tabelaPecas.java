@@ -1,4 +1,5 @@
-package estoque_pecas.pedido;
+
+package estoque_pecas.peca;
 
 import estoque_pecas.comandos.ClasseConexao;
 import java.sql.Connection;
@@ -12,7 +13,7 @@ import net.proteanit.sql.DbUtils;
  *
  * @author rafae
  */
-public class pedidoAberto extends javax.swing.JFrame {
+public class tabelaPecas extends javax.swing.JFrame {
 
 public void Selecionando()
 	{
@@ -24,13 +25,13 @@ public void Selecionando()
             try {
                     conexao = ClasseConexao.Conectar();
                     comando = conexao.createStatement();
-                    String meu_sql = "SELECT id_compra AS 'Número Pedido', cod_peca_compra AS 'Código', quant_peca_compra AS 'Quantidade' FROM compra WHERE estado_compra = 0";
+                    String meu_sql = "SELECT cod_peca AS 'Código', nome_peca AS 'Nome', desc_peca AS 'Descrição', valor_peca AS 'valor_peca', uni_peca AS 'Unidade', quant_peca AS 'Quantidade'  FROM pecas";
                     resultado = comando.executeQuery(meu_sql); 
-                    tableAbertos.setModel(DbUtils.resultSetToTableModel(resultado));
-                    quantTable = tableAbertos.getRowCount();
+                    tablePecas.setModel(DbUtils.resultSetToTableModel(resultado));
+                    quantTable = tablePecas.getRowCount();
                     if(quantTable == 0){
                         this.dispose();
-                        JOptionPane.showMessageDialog(null,"Nenhum pedido em aberto!");
+                        JOptionPane.showMessageDialog(null,"Nenhuma peça cadastrada!");
                     }
 
             }
@@ -52,9 +53,7 @@ public void Selecionando()
                 }
             }		
     }
-    
-    
-    public pedidoAberto() {
+    public tabelaPecas() {
         initComponents();
     }
 
@@ -68,12 +67,10 @@ public void Selecionando()
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableAbertos = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        tablePecas = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Pedidos em Aberto");
+        setTitle("Tabela de Peças");
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
@@ -81,47 +78,28 @@ public void Selecionando()
             }
         });
 
-        tableAbertos.setModel(new javax.swing.table.DefaultTableModel(
+        tablePecas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3"
+                "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(tableAbertos);
-
-        jButton2.setText("Cancelar Pedido");
-
-        jButton3.setText("Concluir Pedido");
+        jScrollPane1.setViewportView(tablePecas);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 744, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
 
         pack();
@@ -149,28 +127,26 @@ public void Selecionando()
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(pedidoAberto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tabelaPecas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(pedidoAberto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tabelaPecas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(pedidoAberto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tabelaPecas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(pedidoAberto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tabelaPecas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new pedidoAberto().setVisible(true);
+                new tabelaPecas().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tableAbertos;
+    private javax.swing.JTable tablePecas;
     // End of variables declaration//GEN-END:variables
 }

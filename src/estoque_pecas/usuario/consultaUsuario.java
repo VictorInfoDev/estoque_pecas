@@ -151,42 +151,49 @@ public void Selecionando()
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Connection conexao = null;
-        PreparedStatement comando = null;
-        int result = JOptionPane.showConfirmDialog(null,"Confirme para excluir: "+nomeUsuarioDelete.getText(),"Excluindo...", JOptionPane.YES_NO_CANCEL_OPTION);
-        if(result == 0){
-            try
-            {
-                conexao = ClasseConexao.Conectar();
-                String sql = "DELETE FROM usuario WHERE nome_user=?";
-                comando = conexao.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-                comando.setString(1, nomeUsuarioDelete.getText());
-
-                if(comando.executeUpdate()>0)
+        String nomesuper = nomeUsuarioDelete.getText();
+        if(nomesuper.equals("admin")){
+            JOptionPane.showMessageDialog(null, "Usuário admin não pode ser excluído!");
+            nomeUsuarioDelete.setText("");
+        }else{
+                    Connection conexao = null;
+            PreparedStatement comando = null;
+            int result = JOptionPane.showConfirmDialog(null,"Confirme para excluir: "+nomeUsuarioDelete.getText(),"Excluindo...", JOptionPane.YES_NO_CANCEL_OPTION);
+            if(result == 0){
+                try
                 {
-                        this.dispose();
-                        JOptionPane.showMessageDialog(null,"Usuário Excluído!");
+                    conexao = ClasseConexao.Conectar();
+                    String sql = "DELETE FROM usuario WHERE nome_user=?";
+                    comando = conexao.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+                    comando.setString(1, nomeUsuarioDelete.getText());
 
-                }else{
-                    JOptionPane.showMessageDialog(null, "Usuário não encontrado!");
-                    nomeUsuarioDelete.setText("");
-                }
-                }catch(SQLException erro)
-                {
-                        erro.printStackTrace();
-                }finally {
-                    ClasseConexao.FecharConexao(conexao);
-                    try
+                    if(comando.executeUpdate()>0)
                     {
-                        comando.close();
+                            this.dispose();
+                            JOptionPane.showMessageDialog(null,"Usuário Excluído!");
+
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Usuário não encontrado!");
+                        nomeUsuarioDelete.setText("");
+                    }
                     }catch(SQLException erro)
                     {
-                        erro.printStackTrace();
-                    }           
-                }
-        }else{
-            nomeUsuarioDelete.setText("");
+                            erro.printStackTrace();
+                    }finally {
+                        ClasseConexao.FecharConexao(conexao);
+                        try
+                        {
+                            comando.close();
+                        }catch(SQLException erro)
+                        {
+                            erro.printStackTrace();
+                        }           
+                    }
+            }else{
+                nomeUsuarioDelete.setText("");
+            }
         }
+
 
     }//GEN-LAST:event_jButton1ActionPerformed
 

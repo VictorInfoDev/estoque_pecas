@@ -3,6 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package estoque_pecas.pedido;
+import estoque_pecas.filtros.caixaAlta;
+import estoque_pecas.comandos.ClasseConexao;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import net.proteanit.sql.DbUtils;
 
 /**
  *
@@ -10,11 +18,46 @@ package estoque_pecas.pedido;
  */
 public class pedidoFechado extends javax.swing.JFrame {
 
-    /**
-     * Creates new form pedidoFechado
-     */
+public void Selecionando(String linhaBusca)
+	{
+            //buscar dados usuários para tabela 
+            Connection conexao = null;
+            Statement  comando = null;
+            ResultSet  resultado = null;
+            int quantTable = 0;
+            try {
+                    conexao = ClasseConexao.Conectar();
+                    comando = conexao.createStatement();
+                    String meu_sql = linhaBusca;
+                    resultado = comando.executeQuery(meu_sql); 
+                    tableFechados.setModel(DbUtils.resultSetToTableModel(resultado));
+                    quantTable = tableFechados.getRowCount();
+                    if(quantTable == 0){
+                        JOptionPane.showMessageDialog(null,"Sem registro de pedidos!");
+                    }
+
+            }
+            catch (SQLException e)
+            {
+                    e.printStackTrace();
+            }
+            finally
+            {
+                ClasseConexao.FecharConexao(conexao);
+                try
+                {
+                        comando.close();
+                        resultado.close();
+                }
+                catch (SQLException e)
+                {
+                        e.printStackTrace();
+                }
+            }		
+    }
     public pedidoFechado() {
         initComponents();
+        cod_pedido.setDocument(new caixaAlta());
     }
 
     /**
@@ -26,22 +69,128 @@ public class pedidoFechado extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableFechados = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        numero_pedido = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        cod_pedido = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Pedidos Concluídos");
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
+
+        tableFechados.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tableFechados.setEnabled(false);
+        jScrollPane1.setViewportView(tableFechados);
+
+        jLabel1.setText("Número pedido:");
+
+        jLabel2.setText("Código peça:");
+
+        jButton1.setText("Procurar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Resetar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(numero_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(cod_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(numero_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cod_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        String linha = "SELECT id_compra AS 'Número Pedido', cod_peca_compra AS 'Código', quant_peca_compra AS 'Quantidade', CONCAT(dia, '/', mes, '/', ano) AS 'Data' FROM compra WHERE estado_compra=1";
+        Selecionando(linha);
+    }//GEN-LAST:event_formWindowOpened
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if(numero_pedido.getText().equals("") || numero_pedido == null){numero_pedido.setText("0");}
+        if(cod_pedido.getText().equals("") || cod_pedido == null){cod_pedido.setText("");}
+        int id = Integer.parseInt(numero_pedido.getText());
+        String cod = cod_pedido.getText();
+        String linha = "SELECT id_compra AS 'Número Pedido', cod_peca_compra AS 'Código', quant_peca_compra AS 'Quantidade', CONCAT(dia, '/', mes, '/', ano) AS 'Data' FROM compra WHERE";
+        if(id != 0 && !cod.equals("")){linha=linha+" id_compra='"+numero_pedido.getText()+"' "+" and cod_peca_compra='"+cod+"'";}
+        if(id != 0 && cod.equals("")){linha=linha+" id_compra='"+numero_pedido.getText()+"'";}
+        if(!cod.equals("") && id == 0){linha=linha+" cod_peca_compra='"+cod+"'";}
+        if(id == 0 && cod.equals("")){linha="SELECT id_compra AS 'Número Pedido', cod_peca_compra AS 'Código', quant_peca_compra AS 'Quantidade', CONCAT(dia, '/', mes, '/', ano) AS 'Data' FROM compra WHERE estado_compra=1";JOptionPane.showMessageDialog(null, "Dados inválidos para busca!");}
+        Selecionando(linha);
+        
+        numero_pedido.setText("");
+        cod_pedido.setText("");       
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String linha = "SELECT id_compra AS 'Número Pedido', cod_peca_compra AS 'Código', quant_peca_compra AS 'Quantidade', CONCAT(dia, '/', mes, '/', ano) AS 'Data' FROM compra WHERE estado_compra=1";
+        Selecionando(linha);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -79,5 +228,13 @@ public class pedidoFechado extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField cod_pedido;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField numero_pedido;
+    private javax.swing.JTable tableFechados;
     // End of variables declaration//GEN-END:variables
 }

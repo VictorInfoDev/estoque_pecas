@@ -1,11 +1,14 @@
 package estoque_pecas.pedido;
 
 import estoque_pecas.comandos.ClasseConexao;
+import estoque_pecas.os.addPecaOs;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -95,8 +98,18 @@ public void Selecionando()
         jScrollPane1.setViewportView(tableAbertos);
 
         jButton2.setText("Cancelar Pedido");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Concluir Pedido");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -131,6 +144,110 @@ public void Selecionando()
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         Selecionando();
     }//GEN-LAST:event_formWindowOpened
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        int linhaSel = tableAbertos.getSelectedRow();
+        if(linhaSel == -1){
+            JOptionPane.showMessageDialog(this, "Nenhum pedido selecionado!","Erro",JOptionPane.ERROR_MESSAGE);
+        }else{
+            DefaultTableModel model = (DefaultTableModel) tableAbertos.getModel();
+            Integer codRow = (Integer) model.getValueAt(linhaSel, 0);
+            Connection conexao = null;
+            PreparedStatement comando = null;
+            int result = JOptionPane.showConfirmDialog(null,"Confirme para excluir o pedido: "+codRow,"Excluindo...", JOptionPane.YES_NO_CANCEL_OPTION);
+            if(result == 0){
+                try
+                {
+                    conexao = ClasseConexao.Conectar();
+                    String sql = "DELETE FROM compra WHERE id_compra=?";
+                    comando = conexao.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+                    comando.setInt(1, codRow);
+
+                    if(comando.executeUpdate()>0)
+                    {
+                            JOptionPane.showMessageDialog(null,"Pedido cancelado!");
+                            Selecionando();
+
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Pedido não encontrado!");
+                    }
+                    }catch(SQLException erro)
+                    {
+                            erro.printStackTrace();
+                    }finally {
+                        ClasseConexao.FecharConexao(conexao);
+                        try
+                        {
+                            comando.close();
+                        }catch(SQLException erro)
+                        {
+                            erro.printStackTrace();
+                        }           
+                    }
+            }else{
+                
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int linhaSel = tableAbertos.getSelectedRow();
+        if(linhaSel == -1){
+            JOptionPane.showMessageDialog(this, "Nenhum pedido selecionado!","Erro",JOptionPane.ERROR_MESSAGE);
+        }else{
+            DefaultTableModel model = (DefaultTableModel) tableAbertos.getModel();
+            Integer codRow = (Integer) model.getValueAt(linhaSel, 0);
+            Connection conexao = null;
+            int result = JOptionPane.showConfirmDialog(null,"Confirme para concluir o pedido: "+codRow,"Excluindo...", JOptionPane.YES_NO_CANCEL_OPTION);
+            if(result == 0){
+                    
+                    PreparedStatement comandoIn = null;
+                    try{conexao = ClasseConexao.Conectar();
+                        //LINHA DE INSERT, DELETE E UPDATE SQL
+                        String sqlIn = "UPDATE compra SET estado_compra=? WHERE id_compra=?";
+                        comandoIn = conexao.prepareStatement(sqlIn,Statement.RETURN_GENERATED_KEYS);
+
+                        //VALORES PARA OS CAMPOS DA LINHA SQL  
+                        comandoIn.setInt(1, 1);
+                        comandoIn.setInt(2, codRow);
+
+                        if(comandoIn.executeUpdate()>0)
+                        {
+                            //EXECUTA CASO A OPERACAO SEJA REALIZADA COM SUCESSO
+                            JOptionPane.showMessageDialog(null, "Pedido concluído!");
+                            Integer quantPeca = (Integer) model.getValueAt(linhaSel, 2);
+                            String codPeca = (String) model.getValueAt(linhaSel, 1);
+                            
+                            PreparedStatement comandoIn2 = null;
+                            try{conexao = ClasseConexao.Conectar();
+                                //LINHA DE INSERT, DELETE E UPDATE SQL
+                                String sqlIn2 = "UPDATE pecas SET quant_peca=quant_peca+? WHERE cod_peca=?";
+                                comandoIn2 = conexao.prepareStatement(sqlIn2,Statement.RETURN_GENERATED_KEYS);
+
+                                //VALORES PARA OS CAMPOS DA LINHA SQL  
+                                comandoIn2.setInt(1, quantPeca);
+                                comandoIn2.setString(2, codPeca);
+
+                                if(comandoIn2.executeUpdate()>0)
+                                {
+            
+                                }}catch(SQLException erro)
+                            {erro.printStackTrace();}
+                            finally{ClasseConexao.FecharConexao(conexao);
+                                try{comandoIn2.close();}
+                                catch(SQLException erro){erro.printStackTrace();}}
+
+                        }}catch(SQLException erro)
+                    {erro.printStackTrace();}
+                    finally{ClasseConexao.FecharConexao(conexao);
+                        try{comandoIn.close();}
+                        catch(SQLException erro){erro.printStackTrace();}}
+                    Selecionando();
+            }else{
+                
+            }
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments

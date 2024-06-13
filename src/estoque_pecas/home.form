@@ -135,11 +135,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Abertos"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jMenu16MouseClicked"/>
+              </Events>
             </Menu>
             <Menu class="javax.swing.JMenu" name="jMenu17">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Encerrados"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jMenu17MouseClicked"/>
+              </Events>
             </Menu>
           </SubComponents>
         </Menu>

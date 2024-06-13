@@ -213,12 +213,13 @@ public class pedidoPeca extends javax.swing.JFrame {
                     .addComponent(jLabel19)
                     .addComponent(unidadePedido))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel20)
-                    .addComponent(qtdDisponivelPedido)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton8)
-                        .addComponent(jButton1)))
+                        .addComponent(jButton1))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel20)
+                        .addComponent(qtdDisponivelPedido)))
                 .addContainerGap(35, Short.MAX_VALUE))
         );
 
@@ -309,7 +310,15 @@ public class pedidoPeca extends javax.swing.JFrame {
             {
                 //EXECUTA CASO A OPERACAO SEJA REALIZADA COM SUCESSO 
                 JOptionPane.showMessageDialog(null, "Pedido criado!");
-                this.dispose();
+                codPedido.setText("");
+                qtdPedido.setText("");
+                nomePedido.setText("");
+                descPedido.setText("");
+                unidadePedido.setText("");
+                qtdDisponivelPedido.setText("");
+                codPedido.setEditable(true);
+                qtdPedido.setEditable(true);
+                
 
             }}catch(SQLException erro)
         {erro.printStackTrace();}

@@ -1,5 +1,7 @@
 package estoque_pecas;
 import estoque_pecas.pedido.pedidoPeca;
+import estoque_pecas.pedido.pedidoAberto;
+import estoque_pecas.pedido.pedidoFechado;
 import estoque_pecas.peca.cadastroPeca;
 import estoque_pecas.peca.consultaPeca;
 import estoque_pecas.peca.baixaPeca;
@@ -343,9 +345,19 @@ public class home extends javax.swing.JFrame {
         jMenu5.add(jMenu15);
 
         jMenu16.setText("Abertos");
+        jMenu16.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu16MouseClicked(evt);
+            }
+        });
         jMenu5.add(jMenu16);
 
         jMenu17.setText("Encerrados");
+        jMenu17.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu17MouseClicked(evt);
+            }
+        });
         jMenu5.add(jMenu17);
 
         jMenuBar1.add(jMenu5);
@@ -445,6 +457,14 @@ public class home extends javax.swing.JFrame {
     private void jMenu10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu10MouseClicked
         new consultaPeca().setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_jMenu10MouseClicked
+
+    private void jMenu16MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu16MouseClicked
+        new pedidoAberto().setVisible(true);
+    }//GEN-LAST:event_jMenu16MouseClicked
+
+    private void jMenu17MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu17MouseClicked
+        new pedidoFechado().setVisible(true);
+    }//GEN-LAST:event_jMenu17MouseClicked
 
     /**
      * @param args the command line arguments

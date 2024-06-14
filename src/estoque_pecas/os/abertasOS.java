@@ -4,16 +4,19 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
-import estoque_pecas.os.addPecaOs;
 
 /**
  *
  * @author victo
  */
 public class abertasOS extends javax.swing.JFrame {
+    
+
+    
 public void Selecionando()
 	{
             //buscar dados usuários para tabela 
@@ -67,14 +70,13 @@ public void Selecionando()
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tableOS = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("OS Abertas");
-        setAlwaysOnTop(true);
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
@@ -95,21 +97,31 @@ public void Selecionando()
         ));
         jScrollPane1.setViewportView(tableOS);
 
-        jButton1.setText("Cancelar OS");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButton2.setText("Concluir OS");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButton2ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Concluir OS");
-
         jButton3.setText("Serviços");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Peças");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Cancelar OS");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -138,10 +150,10 @@ public void Selecionando()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
                     .addComponent(jButton2)
                     .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(jButton4)
+                    .addComponent(jButton1))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -165,8 +177,111 @@ public void Selecionando()
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int linhaSel = tableOS.getSelectedRow();
+        if(linhaSel == -1){
+            JOptionPane.showMessageDialog(this, "Nenhuma OS selecionada!","Erro",JOptionPane.ERROR_MESSAGE);
+        }else{
+            DefaultTableModel model = (DefaultTableModel) tableOS.getModel();
+            Integer OSAD = (Integer) model.getValueAt(linhaSel, 0);
+            new addServico(OSAD).setVisible(true);
+            this.dispose();
+        }// TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        int linhaSel = tableOS.getSelectedRow();
+ 
+        if(linhaSel == -1){
+            JOptionPane.showMessageDialog(this, "Nenhuma OS selecionada!","Erro",JOptionPane.ERROR_MESSAGE);
+        }
+        else
+        {
+
+            DefaultTableModel model = (DefaultTableModel) tableOS.getModel();
+            Integer id = (Integer) model.getValueAt(linhaSel, 0);
+            int result = JOptionPane.showConfirmDialog(null,"Confirme para concluir OS: "+id,"Excluindo...", JOptionPane.YES_NO_CANCEL_OPTION);
+            if(result == 0){
+                Connection conexao = null;
+                conexao = ClasseConexao.Conectar();
+                PreparedStatement comandoIn = null;
+                try{conexao = ClasseConexao.Conectar();
+                    //LINHA DE INSERT, DELETE E UPDATE SQL
+                    String sqlIn = "UPDATE ordem_servico SET estado_os=1 WHERE id_os=?";
+                    comandoIn = conexao.prepareStatement(sqlIn,Statement.RETURN_GENERATED_KEYS);
+
+                    //VALORES PARA OS CAMPOS DA LINHA SQL  
+                    comandoIn.setInt(1, id);
+
+                    if(comandoIn.executeUpdate()>0)
+                    {
+                        //EXECUTA CASO A OPERACAO SEJA REALIZADA COM SUCESSO
+                        JOptionPane.showMessageDialog(null, "Ordem de serviço concluída!");
+                        Selecionando();
+
+                    }}catch(SQLException erro)
+                {erro.printStackTrace();}
+                finally{ClasseConexao.FecharConexao(conexao);
+                    try{comandoIn.close();}
+                    catch(SQLException erro){erro.printStackTrace();}}
+                
+            }
+            
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        int linhaSel = tableOS.getSelectedRow();
+ 
+        if(linhaSel == -1){
+            JOptionPane.showMessageDialog(this, "Nenhuma OS selecionada!","Erro",JOptionPane.ERROR_MESSAGE);
+        }
+        else
+        {
+
+            DefaultTableModel model = (DefaultTableModel) tableOS.getModel();
+            Integer id = (Integer) model.getValueAt(linhaSel, 0);
+            int result = JOptionPane.showConfirmDialog(null,"Confirme para excluir OS: "+id,"Excluindo...", JOptionPane.YES_NO_CANCEL_OPTION);
+            if(result == 0){
+            Connection conexao = null;
+            PreparedStatement comandoIn = null;
+            try{conexao = ClasseConexao.Conectar();
+                //LINHA DE INSERT, DELETE E UPDATE SQL
+                String sqlIn = "DELETE FROM pecas_os WHERE id_os_peca=?";
+                comandoIn = conexao.prepareStatement(sqlIn,Statement.RETURN_GENERATED_KEYS);
+
+                //VALORES PARA OS CAMPOS DA LINHA SQL  
+                comandoIn.setInt(1, id);
+                if(comandoIn.executeUpdate()>0)
+                {
+                    //EXECUTA CASO A OPERACAO SEJA REALIZADA COM SUCESSO
+                        conexao = null;
+                        PreparedStatement comandoIn2 = null;
+                        try{conexao = ClasseConexao.Conectar();
+                            //LINHA DE INSERT, DELETE E UPDATE SQL
+                            String sqlIn2 = "DELETE FROM ordem_servico WHERE id_os=?";
+                            comandoIn2 = conexao.prepareStatement(sqlIn2,Statement.RETURN_GENERATED_KEYS);
+
+                            //VALORES PARA OS CAMPOS DA LINHA SQL  
+                            comandoIn2.setInt(1, id);
+                            if(comandoIn2.executeUpdate()>0)
+                            {
+                                //EXECUTA CASO A OPERACAO SEJA REALIZADA COM SUCESSO
+                                JOptionPane.showMessageDialog(null, "Ordem de serviço cancelada!");
+                                Selecionando();
+                            }}catch(SQLException erro)
+                        {erro.printStackTrace();}
+                        finally{ClasseConexao.FecharConexao(conexao);
+                            try{comandoIn2.close();}
+                            catch(SQLException erro){erro.printStackTrace();}}
+
+                    }}catch(SQLException erro)
+                {erro.printStackTrace();}
+                finally{ClasseConexao.FecharConexao(conexao);
+                    try{comandoIn.close();}
+                    catch(SQLException erro){erro.printStackTrace();}}
+            }
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

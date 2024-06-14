@@ -240,6 +240,26 @@ public void Selecionando()
         finally{ClasseConexao.FecharConexao(conexao);
             try{comandoIn.close();}
             catch(SQLException erro){erro.printStackTrace();}}
+        
+        PreparedStatement comandoInE = null;
+        try{
+            conexao = ClasseConexao.Conectar();
+            //LINHA DE INSERT, DELETE E UPDATE SQL
+            String sqlInE = "DELETE FROM baixa WHERE cod_peca_baixa=?";
+            comandoInE = conexao.prepareStatement(sqlInE,Statement.RETURN_GENERATED_KEYS);
+
+            //VALORES PARA OS CAMPOS DA LINHA SQL  
+            comandoInE.setString(1, codBaixa.getText());
+
+            if(comandoInE.executeUpdate()>0)
+            {
+                //EXECUTA CASO A OPERACAO SEJA REALIZADA COM SUCESSO 
+
+            }}catch(SQLException erro)
+        {erro.printStackTrace();}
+        finally{ClasseConexao.FecharConexao(conexao);
+            try{comandoInE.close();}
+            catch(SQLException erro){erro.printStackTrace();}}
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

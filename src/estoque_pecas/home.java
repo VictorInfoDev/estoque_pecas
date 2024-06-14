@@ -13,14 +13,132 @@ import estoque_pecas.usuario.cadastroUsuario;
 import estoque_pecas.comandos.ClasseConexao;
 import estoque_pecas.os.criarOS;
 import estoque_pecas.os.abertasOS;
+import estoque_pecas.os.fechadosOS;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JOptionPane;
+import net.proteanit.sql.DbUtils;
 /**
  *
  * @author victo
  */
 public class home extends javax.swing.JFrame {
+    
+public void Selecionando()
+	{
+            //buscar dados usuários para tabela 
+            Date dataAtual = new Date();
+            SimpleDateFormat formatoDia = new SimpleDateFormat("dd");
+            SimpleDateFormat formatoMes = new SimpleDateFormat("MM");
+            String dia = formatoDia.format(dataAtual);
+            String mes = formatoMes.format(dataAtual);
+            Connection conexao = null;
+            Statement  comando = null;
+            ResultSet  resultado = null;
+            int quantTable = 0;
+            try {
+                    conexao = ClasseConexao.Conectar();
+                    comando = conexao.createStatement();
+                    String meu_sql = "SELECT id_os AS 'OS', cpf_cliente_os AS 'Cliente', placa_veiculo AS 'Placa' FROM ordem_servico WHERE estado_os = 0 and mes='"+mes+"' and dia ='"+dia+"'";
+                    resultado = comando.executeQuery(meu_sql); 
+                    tableOS.setModel(DbUtils.resultSetToTableModel(resultado));
+                    quantTable = tableOS.getRowCount();
+                    if(quantTable == 0){
+                    }
+
+            }
+            catch (SQLException e)
+            {
+                    e.printStackTrace();
+            }
+            finally
+            {
+                ClasseConexao.FecharConexao(conexao);
+                try
+                {
+                        comando.close();
+                        resultado.close();
+                }
+                catch (SQLException e)
+                {
+                        e.printStackTrace();
+                }
+            }		
+    }
+    
+public void Selecionando2()
+	{
+            //buscar dados usuários para tabela 
+            Connection conexao = null;
+            Statement  comando = null;
+            ResultSet  resultado = null;
+            int quantTable = 0;
+            try {
+                    conexao = ClasseConexao.Conectar();
+                    comando = conexao.createStatement();
+                    String meu_sql = "SELECT cod_peca AS 'Código', uni_peca AS 'Unidade', quant_peca AS 'Quantidade' FROM pecas WHERE quant_peca<6";
+                    resultado = comando.executeQuery(meu_sql); 
+                    tablePeca.setModel(DbUtils.resultSetToTableModel(resultado));
+                    quantTable = tablePeca.getRowCount();
+                    if(quantTable == 0){
+                    }
+
+            }
+            catch (SQLException e)
+            {
+                    e.printStackTrace();
+            }
+            finally
+            {
+                ClasseConexao.FecharConexao(conexao);
+                try
+                {
+                        comando.close();
+                        resultado.close();
+                }
+                catch (SQLException e)
+                {
+                        e.printStackTrace();
+                }
+            }		
+    }
+public void Selecionando3()
+	{
+            Date dataAtual = new Date();
+            SimpleDateFormat formatoDia = new SimpleDateFormat("dd");
+            SimpleDateFormat formatoMes = new SimpleDateFormat("MM");
+            String dia = formatoDia.format(dataAtual);
+            String mes = formatoMes.format(dataAtual);
+            Connection conexao = null;
+            Statement  comando = null;
+            ResultSet  resultado = null;
+            Statement comandoSelect = null;
+            try
+            {
+                conexao = ClasseConexao.Conectar();
+                comandoSelect = conexao.createStatement();
+                //LINHA DE BUSCA SQL
+                String sqlSelect = "SELECT SUM(valor_os) FROM ordem_servico WHERE estado_os = 1 and mes='"+mes+"' and dia ='"+dia+"'";
+                resultado = comandoSelect.executeQuery(sqlSelect);
+                //RESULTADO DA BUSCA
+                while(resultado.next())
+                {
+                    faturamento.setText(resultado.getString("SUM(valor_os)"));
+                }
+
+            }catch(SQLException erro){erro.printStackTrace();}
+            finally{ClasseConexao.FecharConexao(conexao);
+                try{comandoSelect.close();}
+                catch(SQLException erro){erro.printStackTrace();}}
+            	
+    }
+    
+    
+    
     
     private String tipo_user;
     
@@ -53,21 +171,18 @@ public class home extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tableOS = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tablePeca = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         nomeUserLogin = new javax.swing.JLabel();
+        faturamento = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
@@ -112,7 +227,7 @@ public class home extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Outher Packages/imagens/icon database.png"))); // NOI18N
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tableOS.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -120,9 +235,9 @@ public class home extends javax.swing.JFrame {
                 "OS", "Placa", "CPF", "Horário"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tableOS);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tablePeca.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -130,7 +245,7 @@ public class home extends javax.swing.JFrame {
                 "Código", "Nome", "Unidade", "Quantidade"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(tablePeca);
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("Ordens de serviços para hoje");
@@ -138,14 +253,8 @@ public class home extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setText("Peças com baixas quantidades");
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel4.setText("Faturado no mês:");
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel5.setText("Despesas do mês:");
-
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel6.setText("Lucro do faturamento:");
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Outher Packages/imagens/icon reload.png"))); // NOI18N
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -157,49 +266,47 @@ public class home extends javax.swing.JFrame {
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Outher Packages/imagens/icon reload.png"))); // NOI18N
         jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel7.setText("R$ 0000");
-
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel8.setText("R$ 0000");
-
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel9.setText("R$ 0000");
+        jLabel7.setText("R$");
 
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Outher Packages/imagens/logo projeto.png"))); // NOI18N
+
+        faturamento.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        faturamento.setText("...");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel2)
+                                    .addGap(185, 185, 185)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(62, 62, 62)
+                            .addComponent(nomeUserLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(21, 21, 21)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(185, 185, 185)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel4)
-                                        .addComponent(jLabel7))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel5)
-                                        .addComponent(jLabel8))
-                                    .addGap(35, 35, 35)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel9)
-                                        .addComponent(jLabel6))))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62)
-                        .addComponent(nomeUserLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(jLabel7)
+                                .addGap(2, 2, 2)
+                                .addComponent(faturamento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel4))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -223,26 +330,23 @@ public class home extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6))
+                        .addGap(13, 13, 13)
+                        .addComponent(jLabel4)
+                        .addGap(5, 5, 5)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel7)
-                                    .addComponent(jLabel8)
-                                    .addComponent(jLabel9))
+                                    .addComponent(faturamento))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(nomeUserLogin))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(3, 3, 3)
+                        .addGap(21, 21, 21)
                         .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -270,6 +374,11 @@ public class home extends javax.swing.JFrame {
         jMenu1.add(jMenu8);
 
         jMenu9.setText("Encerradas");
+        jMenu9.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu9MouseClicked(evt);
+            }
+        });
         jMenu1.add(jMenu9);
 
         jMenuBar1.add(jMenu1);
@@ -404,6 +513,9 @@ public class home extends javax.swing.JFrame {
         Connection conn = ClasseConexao.Conectar();
         jLabel1.setText("Database Connect");
         ClasseConexao.FecharConexao(conn);
+        Selecionando();
+        Selecionando2();
+        Selecionando3();
     }//GEN-LAST:event_formWindowOpened
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
@@ -411,7 +523,8 @@ public class home extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowActivated
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        Selecionando();
+        Selecionando3();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jMenu13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu13MouseClicked
@@ -466,6 +579,15 @@ public class home extends javax.swing.JFrame {
         new pedidoFechado().setVisible(true);
     }//GEN-LAST:event_jMenu17MouseClicked
 
+    private void jMenu9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu9MouseClicked
+        new fechadosOS().setVisible(true);
+    }//GEN-LAST:event_jMenu9MouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Selecionando2();
+        Selecionando3();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -503,6 +625,7 @@ public class home extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel faturamento;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -511,11 +634,7 @@ public class home extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu11;
@@ -540,10 +659,10 @@ public class home extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private javax.swing.JMenu menu2Admin;
     private javax.swing.JMenu menuAdmin;
     public javax.swing.JLabel nomeUserLogin;
+    private javax.swing.JTable tableOS;
+    private javax.swing.JTable tablePeca;
     // End of variables declaration//GEN-END:variables
 }

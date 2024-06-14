@@ -4,10 +4,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Array;
 import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
+import java.util.Arrays;
+import java.sql.*;
 
 /**
  *
@@ -15,7 +18,35 @@ import net.proteanit.sql.DbUtils;
  */
 public class abertasOS extends javax.swing.JFrame {
     
+    
+public void Deletando(String[] codigos, String[] quantidades, int qtd){
+    int i;
+    for(i=0;i<qtd;i++){
+        Connection conexao = null;
+        conexao = ClasseConexao.Conectar();
+        PreparedStatement comandoIn = null;
+        try{
+            conexao = ClasseConexao.Conectar();
+            //LINHA DE INSERT, DELETE E UPDATE SQL
+            String sqlIn = "UPDATE pecas SET quant_peca=quant_peca+? WHERE cod_peca=?";
+            comandoIn = conexao.prepareStatement(sqlIn,Statement.RETURN_GENERATED_KEYS);
 
+            //VALORES PARA OS CAMPOS DA LINHA SQL  
+            comandoIn.setInt(1, Integer.parseInt(quantidades[i]));
+            comandoIn.setString(2, codigos[i]);
+
+            if(comandoIn.executeUpdate()>0)
+            {
+                //EXECUTA CASO A OPERACAO SEJA REALIZADA COM SUCESSO 
+
+            }}catch(SQLException erro)
+        {erro.printStackTrace();}
+        finally{ClasseConexao.FecharConexao(conexao);
+            try{comandoIn.close();}
+            catch(SQLException erro){erro.printStackTrace();}}
+    }
+}
+    
     
 public void Selecionando()
 	{
@@ -200,8 +231,13 @@ public void Selecionando()
 
             DefaultTableModel model = (DefaultTableModel) tableOS.getModel();
             Integer id = (Integer) model.getValueAt(linhaSel, 0);
+            double valorDouble = 0;
             int result = JOptionPane.showConfirmDialog(null,"Confirme para concluir OS: "+id,"Excluindo...", JOptionPane.YES_NO_CANCEL_OPTION);
-            if(result == 0){
+            Object valorObjeto = tableOS.getValueAt(linhaSel, 3);
+            if (valorObjeto instanceof Number) {
+                valorDouble = ((Number) valorObjeto).doubleValue();
+            }
+            if(result == 0 && valorDouble > 0){
                 Connection conexao = null;
                 conexao = ClasseConexao.Conectar();
                 PreparedStatement comandoIn = null;
@@ -225,6 +261,8 @@ public void Selecionando()
                     try{comandoIn.close();}
                     catch(SQLException erro){erro.printStackTrace();}}
                 
+            }else{
+            JOptionPane.showMessageDialog(null, "Ordem de serviço com valor nulo!");
             }
             
         }
@@ -243,7 +281,45 @@ public void Selecionando()
             Integer id = (Integer) model.getValueAt(linhaSel, 0);
             int result = JOptionPane.showConfirmDialog(null,"Confirme para excluir OS: "+id,"Excluindo...", JOptionPane.YES_NO_CANCEL_OPTION);
             if(result == 0){
-            Connection conexao = null;
+                Connection conexao = null;
+
+                //deletar peças
+            String[] codigos = null;
+            String[] quantidades = null;
+            int qtdP = 0;
+            conexao = null;
+            Statement comandoSelect = null;
+            ResultSet resultado = null;
+            try {
+                conexao = ClasseConexao.Conectar();
+                comandoSelect = conexao.createStatement();
+
+                String sqlSelect = "SELECT count(cod_peca_os), GROUP_CONCAT(cod_peca_os) AS codigos, GROUP_CONCAT(quant_peca) AS quantidades FROM pecas_os WHERE id_os_peca = '" + id + "'";
+                resultado = comandoSelect.executeQuery(sqlSelect);
+
+                while (resultado.next()) {
+                    String codigosConcatenados = resultado.getString("codigos");
+                    String quantidadesConcatenadas = resultado.getString("quantidades");
+
+                    // Separar a string concatenada em um array de strings
+                    codigos = codigosConcatenados.split(",");
+                    quantidades = quantidadesConcatenadas.split(",");
+                    qtdP= Integer.parseInt(resultado.getString("count(cod_peca_os)"));
+                }
+
+            } catch (SQLException erro) {
+                erro.printStackTrace();
+            } finally {
+                ClasseConexao.FecharConexao(conexao);
+                try {
+                    if (comandoSelect != null) {
+                        comandoSelect.close();
+                    }
+                } catch (SQLException erro) {
+                    erro.printStackTrace();
+                }
+            }
+            Deletando(codigos, quantidades, qtdP);
             PreparedStatement comandoIn = null;
             try{conexao = ClasseConexao.Conectar();
                 //LINHA DE INSERT, DELETE E UPDATE SQL
@@ -255,31 +331,33 @@ public void Selecionando()
                 if(comandoIn.executeUpdate()>0)
                 {
                     //EXECUTA CASO A OPERACAO SEJA REALIZADA COM SUCESSO
-                        conexao = null;
-                        PreparedStatement comandoIn2 = null;
-                        try{conexao = ClasseConexao.Conectar();
-                            //LINHA DE INSERT, DELETE E UPDATE SQL
-                            String sqlIn2 = "DELETE FROM ordem_servico WHERE id_os=?";
-                            comandoIn2 = conexao.prepareStatement(sqlIn2,Statement.RETURN_GENERATED_KEYS);
-
-                            //VALORES PARA OS CAMPOS DA LINHA SQL  
-                            comandoIn2.setInt(1, id);
-                            if(comandoIn2.executeUpdate()>0)
-                            {
-                                //EXECUTA CASO A OPERACAO SEJA REALIZADA COM SUCESSO
-                                JOptionPane.showMessageDialog(null, "Ordem de serviço cancelada!");
-                                Selecionando();
-                            }}catch(SQLException erro)
-                        {erro.printStackTrace();}
-                        finally{ClasseConexao.FecharConexao(conexao);
-                            try{comandoIn2.close();}
-                            catch(SQLException erro){erro.printStackTrace();}}
 
                     }}catch(SQLException erro)
                 {erro.printStackTrace();}
                 finally{ClasseConexao.FecharConexao(conexao);
-                    try{comandoIn.close();}
+            try{comandoIn.close();}
+            catch(SQLException erro){erro.printStackTrace();}}
+                conexao = null;
+                PreparedStatement comandoIn2 = null;
+                try{conexao = ClasseConexao.Conectar();
+                    //LINHA DE INSERT, DELETE E UPDATE SQL
+                    String sqlIn2 = "DELETE FROM ordem_servico WHERE id_os=?";
+                    comandoIn2 = conexao.prepareStatement(sqlIn2,Statement.RETURN_GENERATED_KEYS);
+
+                    //VALORES PARA OS CAMPOS DA LINHA SQL  
+                    comandoIn2.setInt(1, id);
+                    if(comandoIn2.executeUpdate()>0)
+                    {
+                        //EXECUTA CASO A OPERACAO SEJA REALIZADA COM SUCESSO
+                        JOptionPane.showMessageDialog(null, "Ordem de serviço cancelada!");
+                        Selecionando();
+                    }}catch(SQLException erro)
+                {erro.printStackTrace();}
+                finally{ClasseConexao.FecharConexao(conexao);
+                    try{comandoIn2.close();}
                     catch(SQLException erro){erro.printStackTrace();}}
+
+                
             }
         }
     }//GEN-LAST:event_jButton1ActionPerformed

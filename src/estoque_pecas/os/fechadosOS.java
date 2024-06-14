@@ -1,20 +1,98 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package estoque_pecas.os;
 
-/**
- *
- * @author victo
- */
-public class fechadosOS extends javax.swing.JFrame {
+import estoque_pecas.comandos.ClasseConexao;
+import estoque_pecas.filtros.soNumerosQtd;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import net.proteanit.sql.DbUtils;
 
-    /**
-     * Creates new form fechadosOS
-     */
+public class fechadosOS extends javax.swing.JFrame {
+private double totalOS = 0;
+public void Selecionando(int os){
+    Connection conexao = null;
+    Statement comandoSelect = null;
+    ResultSet resultado = null;
+    try
+    {
+        conexao = ClasseConexao.Conectar();
+        comandoSelect = conexao.createStatement();
+        //LINHA DE BUSCA SQL
+        String sqlSelect = "SELECT nome_cliente_os, cpf_cliente_os, placa_veiculo, modelo_veiculo, ano_veiculo, desc_servico, valor_os, CONCAT(dia, '/', mes, '/', ano) FROM ordem_servico WHERE estado_os = 1 and id_os = '" + os + "'";
+        resultado = comandoSelect.executeQuery(sqlSelect);
+        //RESULTADO DA BUSCA
+        while(resultado.next())
+        {
+            nomeOS.setText(resultado.getString("nome_cliente_os"));
+            cpfOS.setText(resultado.getString("cpf_cliente_os"));
+            placaOS.setText(resultado.getString("placa_veiculo"));
+            modeloOS.setText(resultado.getString("modelo_veiculo"));
+            anoOS.setText(resultado.getString("ano_veiculo"));
+            servicoOS.setText(resultado.getString("desc_servico"));
+            valorTotalOS.setText(resultado.getString("valor_os"));
+            totalOS = Double.parseDouble(resultado.getString("valor_os"));
+            dataOS.setText(resultado.getString("CONCAT(dia, '/', mes, '/', ano)"));
+        }
+
+    }catch(SQLException erro){erro.printStackTrace();}
+    finally{ClasseConexao.FecharConexao(conexao);
+        try{comandoSelect.close();}
+        catch(SQLException erro){erro.printStackTrace();}}	
+    }
+
+public void Selecionando2(int os){
+            //buscar dados usuários para tabela 
+            Connection conexao = null;
+            Statement  comando = null;
+            ResultSet  resultado = null;
+            int quantTable = 0;
+            try {
+                    conexao = ClasseConexao.Conectar();
+                    comando = conexao.createStatement();
+                    String meu_sql = "SELECT cod_peca_os AS 'Código', quant_peca AS 'Quantidade', valor_total AS 'Total'  FROM pecas_os WHERE id_os_peca = '" + os + "'";
+                    resultado = comando.executeQuery(meu_sql); 
+                    tablePecasOS.setModel(DbUtils.resultSetToTableModel(resultado));
+                    quantTable = tablePecasOS.getRowCount();
+                    double somaTotalTable = 0;
+                    for (int i = 0; i < tablePecasOS.getRowCount(); i++) {
+                        Object value = tablePecasOS.getValueAt(i, 2);
+                        if (value instanceof Number) {
+                            somaTotalTable += ((Number) value).doubleValue();
+                        }
+                    }
+                  
+                    valorPecaOS.setText(String.valueOf(somaTotalTable));
+                    double valorS = totalOS - somaTotalTable;
+                    valorServicoOS.setText(String.valueOf(valorS));
+                    if(totalOS == 0){valorServicoOS.setText("");}
+                    if(quantTable == 0){
+                    }
+                    totalOS = 0;
+
+            }
+            catch (SQLException e)
+            {
+                    e.printStackTrace();
+            }
+            finally
+            {
+                ClasseConexao.FecharConexao(conexao);
+                try
+                {
+                        comando.close();
+                        resultado.close();
+                }
+                catch (SQLException e)
+                {
+                        e.printStackTrace();
+                }
+            }		
+    }
     public fechadosOS() {
         initComponents();
+        idOS.setDocument(new soNumerosQtd());
     }
 
     /**
@@ -30,7 +108,7 @@ public class fechadosOS extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jLabel14 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        idOS = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
@@ -43,7 +121,7 @@ public class fechadosOS extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tablePecasOS = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         valorPecaOS = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
@@ -55,7 +133,8 @@ public class fechadosOS extends javax.swing.JFrame {
         valorTotalOS = new javax.swing.JLabel();
         valorServicoOS = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
+        dataOS = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -78,13 +157,18 @@ public class fechadosOS extends javax.swing.JFrame {
 
         jLabel1.setText("Número OS");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        idOS.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                idOSActionPerformed(evt);
             }
         });
 
         jButton1.setText("Limpar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Buscar");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -93,14 +177,19 @@ public class fechadosOS extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("Nome cliente:");
 
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel4.setText("CPF:");
 
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel5.setText("Placa:");
 
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel6.setText("Modelo:");
 
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel7.setText("Ano:");
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -108,12 +197,13 @@ public class fechadosOS extends javax.swing.JFrame {
 
         servicoOS.setText("...");
 
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel10.setText("Valor seviço: R$");
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel11.setText("Peças");
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tablePecasOS.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -121,12 +211,14 @@ public class fechadosOS extends javax.swing.JFrame {
                 "Código", "Quantidade", "Total"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(tablePecasOS);
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("Valor total: R$");
 
         valorPecaOS.setText("...");
 
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel13.setText("Valor total OS:");
 
         nomeOS.setText("...");
@@ -143,9 +235,17 @@ public class fechadosOS extends javax.swing.JFrame {
 
         valorServicoOS.setText("...");
 
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel9.setText("Data:");
 
-        jLabel12.setText("...");
+        dataOS.setText("...");
+
+        jButton3.setText("Verificar todoas as OS");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -154,9 +254,6 @@ public class fechadosOS extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel13)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -190,7 +287,7 @@ public class fechadosOS extends javax.swing.JFrame {
                                     .addComponent(nomeOS))
                                 .addComponent(jLabel1)
                                 .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(idOS, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -200,16 +297,20 @@ public class fechadosOS extends javax.swing.JFrame {
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(cpfOS))
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel9)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel10)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(valorServicoOS, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addContainerGap(21, Short.MAX_VALUE))))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(jLabel9)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(dataOS, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel10)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(valorServicoOS, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap(21, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton3)
+                            .addComponent(jLabel8))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -218,7 +319,7 @@ public class fechadosOS extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(idOS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
                 .addGap(18, 18, 18)
@@ -251,7 +352,7 @@ public class fechadosOS extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(jLabel12))
+                    .addComponent(dataOS))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -267,20 +368,45 @@ public class fechadosOS extends javax.swing.JFrame {
                     .addComponent(valorPecaOS))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void idOSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idOSActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_idOSActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-         
+        if(idOS.getText().equals("")){idOS.setText("0");}
+        int idS = Integer.parseInt(idOS.getText());
+        Selecionando(idS);
+        Selecionando2(idS);
+        idOS.setText("");
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+            nomeOS.setText("");
+            cpfOS.setText("");
+            placaOS.setText("");
+            modeloOS.setText("");
+            anoOS.setText("");
+            servicoOS.setText("");
+            valorTotalOS.setText("");
+            dataOS.setText("");
+            idOS.setText("");
+            valorPecaOS.setText("");
+            Selecionando2(0);
+            valorServicoOS.setText("");
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        new tableOS().setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -320,12 +446,14 @@ public class fechadosOS extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel anoOS;
     private javax.swing.JLabel cpfOS;
+    private javax.swing.JLabel dataOS;
+    private javax.swing.JTextField idOS;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
@@ -339,12 +467,11 @@ public class fechadosOS extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel modeloOS;
     private javax.swing.JLabel nomeOS;
     private javax.swing.JLabel placaOS;
     private javax.swing.JLabel servicoOS;
+    private javax.swing.JTable tablePecasOS;
     private javax.swing.JLabel valorPecaOS;
     private javax.swing.JLabel valorServicoOS;
     private javax.swing.JLabel valorTotalOS;

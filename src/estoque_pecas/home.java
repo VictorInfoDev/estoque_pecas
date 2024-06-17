@@ -43,7 +43,7 @@ public void Selecionando()
             try {
                     conexao = ClasseConexao.Conectar();
                     comando = conexao.createStatement();
-                    String meu_sql = "SELECT id_os AS 'OS', cpf_cliente_os AS 'Cliente', placa_veiculo AS 'Placa' FROM ordem_servico WHERE estado_os = 0 and mes='"+mes+"' and dia ='"+dia+"'";
+                    String meu_sql = "SELECT id_os AS 'OS', cpf_cliente_os AS 'CPF', placa_veiculo AS 'Placa' FROM ordem_servico WHERE estado_os = 0 and mes='"+mes+"' and dia ='"+dia+"'";
                     resultado = comando.executeQuery(meu_sql); 
                     tableOS.setModel(DbUtils.resultSetToTableModel(resultado));
                     quantTable = tableOS.getRowCount();
@@ -109,9 +109,9 @@ public void Selecionando2()
 public void Selecionando3()
 	{
             Date dataAtual = new Date();
-            SimpleDateFormat formatoDia = new SimpleDateFormat("dd");
+            SimpleDateFormat formatoAno = new SimpleDateFormat("yyyy");
             SimpleDateFormat formatoMes = new SimpleDateFormat("MM");
-            String dia = formatoDia.format(dataAtual);
+            String Ano = formatoAno.format(dataAtual);
             String mes = formatoMes.format(dataAtual);
             Connection conexao = null;
             Statement  comando = null;
@@ -122,7 +122,7 @@ public void Selecionando3()
                 conexao = ClasseConexao.Conectar();
                 comandoSelect = conexao.createStatement();
                 //LINHA DE BUSCA SQL
-                String sqlSelect = "SELECT SUM(valor_os) FROM ordem_servico WHERE estado_os = 1 and mes='"+mes+"' and dia ='"+dia+"'";
+                String sqlSelect = "SELECT SUM(valor_os) FROM ordem_servico WHERE estado_os = 1 and mes='"+mes+"' and ano ='"+Ano+"'";
                 resultado = comandoSelect.executeQuery(sqlSelect);
                 //RESULTADO DA BUSCA
                 while(resultado.next())

@@ -302,9 +302,11 @@ public void Selecionando()
                     String quantidadesConcatenadas = resultado.getString("quantidades");
 
                     // Separar a string concatenada em um array de strings
+                    if(codigosConcatenados == null || quantidadesConcatenadas == null){}else{
                     codigos = codigosConcatenados.split(",");
                     quantidades = quantidadesConcatenadas.split(",");
                     qtdP= Integer.parseInt(resultado.getString("count(cod_peca_os)"));
+                    }
                 }
 
             } catch (SQLException erro) {
@@ -319,7 +321,7 @@ public void Selecionando()
                     erro.printStackTrace();
                 }
             }
-            Deletando(codigos, quantidades, qtdP);
+            if(codigos == null || quantidades == null || qtdP == 0){}else{Deletando(codigos, quantidades, qtdP);}
             PreparedStatement comandoIn = null;
             try{conexao = ClasseConexao.Conectar();
                 //LINHA DE INSERT, DELETE E UPDATE SQL
